@@ -65,6 +65,29 @@ class SiteController extends Controller
     }
 
     /**
+     * Метод регистрации пользователя в систему
+     *
+     * @return Response|string
+     */
+    public function actionRegister()
+    {
+        $model = new RegisterForm();
+        if ($model->load(Yii::$app->request->post())) {
+
+            if ($user = $model->register()) {
+
+                Yii::$app->session->setFlash('success', 'Вы успешно зарегистрировались!');
+
+                return $this->redirect('/account');
+            }
+        }
+
+        return $this->render('register', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
      * Login action.
      *
      * @return Response|string
@@ -77,7 +100,13 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            Yii::$app->session->setFlash('success', 'Вы успешно вошли в систему!');
+
+            if (Yii::$app->user->identity->role) {
+                return $this->redirect('/account');
+            } else {
+                return $this->redirect('/admin');
+            }
         }
 
         $model->password = '';
@@ -96,28 +125,5 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionRegister()
-    {
-        $model = new RegisterForm();
-        if ($model->load(Yii::$app->request->post())) {
-
-            if ($user = $model->register()) {
-
-                Yii::$app->session->setFlash('success', 'Вы успешно зарегистрировались!');
-
-                return $this->redirect('/account');
-            }
-        }
-        
-        return $this->render('register', [
-            'model' => $model,
-        ]);
     }
 }

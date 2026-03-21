@@ -8,13 +8,10 @@
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = 'Login';
+$this->title = 'Авторизация';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>Please fill out the following fields to login:</p>
 
     <div class="row">
         <div class="col-lg-5">
@@ -29,7 +26,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ]); ?>
 
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+            <h3><?= Html::encode($this->title) ?></h3>
+
+            <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
             <?= $form->field($model, 'password')->passwordInput() ?>
 
@@ -39,15 +38,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="form-group">
                 <div>
-                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                    <?= Html::submitButton('Авторизоваться', ['class' => 'btn w-100 btn-primary', 'name' => 'login-button']) ?>
                 </div>
             </div>
+
+            <div class="mb-3">
+                <span>Еще не зарегистрированы? 👉</span>
+                <?= Html::a('Регистрация', 'register') ?>
+            </div>
+
 
             <?php ActiveForm::end(); ?>
 
             <div style="color:#999;">
-                You may login with <strong>admin/admin</strong> or <strong>demo/demo</strong>.<br>
-                To modify the username/password, please check out the code <code>app\models\User::$users</code>.
+                You may login with <strong>q/q</strong> or <strong>admin/admin@admin.com</strong>.<br>
             </div>
 
         </div>

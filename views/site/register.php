@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?php $form = ActiveForm::begin(['id' => 'contact-form']); ?>
 
-            <h1><?= Html::encode($this->title) ?></h1>
+            <h3><?= Html::encode($this->title) ?></h3>
 
             <?= $form->field($model, 'full_name')->textInput(['autofocus' => true]) ?>
 
@@ -34,6 +34,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="form-group">
                 <?= Html::submitButton('Зарегистрироваться', ['class' => 'btn w-100 btn-primary', 'name' => 'contact-button']) ?>
+            </div>
+
+            <div class="mb-3">
+                <span>Уже есть аккаунт? 👉</span>
+                <?= Html::a('Войти', 'login') ?>
             </div>
 
             <?php ActiveForm::end(); ?>
