@@ -1,0 +1,81 @@
+#main {
+  animation: main 1s ease 1;
+}
+
+@keyframes main {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.is-invalid {
+  animation: is-invalid 1s ease 1;
+}
+
+@keyframes is-invalid {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(20px);
+  }
+}
+
+.is-valid {
+  animation: is-valid 1s ease 1;
+}
+
+@keyframes is-valid {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-20px);
+  }
+}
+
+.invalid-feedback {
+  animation: invalid-feedback 1s ease 1;
+}
+
+@keyframes invalid-feedback {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(20px);
+  }
+}
+
+.home_circle {
+  width: 350px;
+  border-radius: 50%;
+  opacity: 0.5;
+  margin-bottom: 30px;
+  transition: 1s;
+}
+
+.home_circle:hover {
+  scale: 1.3;
+  opacity: 1;
+}
+
+@font-face {
+  font-family: "Caveat";
+  src: url("../fonts/Caveat-VariableFont_wght.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Caveat";
+}
