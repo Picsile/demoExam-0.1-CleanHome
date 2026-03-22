@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use app\models\Application;
 use app\models\ApplicationSearch;
+use app\models\CancelComment;
+use app\models\Status;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -36,7 +38,7 @@ class AdminController extends Controller
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
                     ],
@@ -75,25 +77,27 @@ class AdminController extends Controller
     }
 
     /**
-     * Creates a new Application model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * Updates an existing Application model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param int $id ID
      * @return string|\yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionCreate()
+    public function actionChangeStatus($id, $alias)
     {
-        $model = new Application();
+        $model = $this->findModel($id);
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+            $status = Status::findOne(['alias' => $alias]);
+            $model->status_id = $status->id;
+
+            if ($model->save(false)) {
+                Yii::$app->session->setFlash('success', 'Вы успешно изменили статус заявки на "' . $status->title . '"!');
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-        } else {
-            $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->redirect('index');
     }
 
     /**
@@ -103,31 +107,26 @@ class AdminController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionCancel($id)
     {
         $model = $this->findModel($id);
+        $cancelComment = new CancelComment();
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost && $cancelComment->load($this->request->post())) {
+
+            $cancelComment->user_id = Yii::$app->user->id;
+            $cancelComment->application_id = $model->id;
+
+            if ($cancelComment->save()) {
+                $this->actionChangeStatus($id, 'Cancel');
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
-        return $this->render('update', [
+        return $this->render('cancel', [
             'model' => $model,
+            'cancelComment' => $cancelComment,
         ]);
-    }
-
-    /**
-     * Deletes an existing Application model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
     }
 
     /**

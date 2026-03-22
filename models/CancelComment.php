@@ -48,7 +48,7 @@ class CancelComment extends \yii\db\ActiveRecord
     {
         return [
             'application_id' => 'Application ID',
-            'comment' => 'Comment',
+            'comment' => 'Причина отмены',
             'user_id' => 'User ID',
         ];
     }
