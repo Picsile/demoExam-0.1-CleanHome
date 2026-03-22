@@ -1,41 +1,43 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use app\models\PayType;
+use app\models\Service;
+use app\models\Tool;
+use yii\bootstrap5\Html;
+use yii\bootstrap5\ActiveForm;
+use yii\web\JqueryAsset;
 
 /** @var yii\web\View $this */
 /** @var app\models\Application $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="application-form">
+<div class="application-form w-50">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'user_id')->textInput() ?>
+    <?= $form->field($model, 'service_id')->dropDownList(Service::getServices(), ['prompt' => 'Выберите тип услуги']) ?>
 
-    <?= $form->field($model, 'service_id')->textInput() ?>
+    <?= $form->field($model, 'date')->textInput(['type' => 'date']) ?>
 
-    <?= $form->field($model, 'date')->textInput() ?>
+    <?= $form->field($model, 'time')->textInput(['type' => 'time']) ?>
 
-    <?= $form->field($model, 'time')->textInput() ?>
+    <?= $form->field($model, 'adress')->textarea(['rows' => 3]) ?>
 
-    <?= $form->field($model, 'adress')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'tool_id')->dropDownList(Tool::getTools(), ['prompt' => 'Выберите средств для уборки']) ?>
 
-    <?= $form->field($model, 'tool_id')->textInput() ?>
+    <?= $form->field($model, 'self_tool')->checkbox() ?>
 
-    <?= $form->field($model, 'self_tool')->textInput() ?>
+    <?= $form->field($model, 'pay_type_id')->dropDownList(PayType::getPayTypes(), ['prompt' => 'Выберите способ оплаты']) ?>
 
-    <?= $form->field($model, 'pay_type_id')->textInput() ?>
-
-    <?= $form->field($model, 'status_id')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
+    <?= $form->field($model, 'rule')->checkbox() ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Отправить', ['class' => 'btn w-100 btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php $this->registerJsFile('/js/create.js', ['depends' => JqueryAsset::class]) ?>

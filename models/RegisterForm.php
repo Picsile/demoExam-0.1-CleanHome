@@ -38,6 +38,7 @@ class RegisterForm extends Model
 
             // email has to be a valid email address
             ['email', 'email'],
+            ['email', 'unique', 'targetClass' => User::class],
         ];
     }
 

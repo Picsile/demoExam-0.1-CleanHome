@@ -29,7 +29,7 @@ use Yii;
  */
 class Application extends \yii\db\ActiveRecord
 {
-
+    public $rule;
 
     /**
      * {@inheritdoc}
@@ -55,7 +55,25 @@ class Application extends \yii\db\ActiveRecord
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::class, 'targetAttribute' => ['status_id' => 'id']],
             [['tool_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tool::class, 'targetAttribute' => ['tool_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+
+            ['rule', 'compare', 'compareValue' => 1, 'message' => 'Подтвердите своё согласие на обработку персональных данных'],
+
+            ['date', 'compare', 'compareValue' => date('Y-m-d'), 'operator' => '>=', 'message' => 'Дата должна быть не раньше сегодняшней'],
+
+            ['time', 'compare', 'compareValue' => '07:00', 'operator' => '>=', 'message' => 'Режим работы сервиса с 7.00 до 22.00'],
+            ['time', 'compare', 'compareValue' => '22:00', 'operator' => '<=', 'message' => 'Режим работы сервиса с 7.00 до 22.00'],
+
+            ['time', 'validateTime'],
         ];
+    }
+
+    public function validateTime($attribute, $params)
+    {
+        if ($this->date === date('Y-m-d')) {
+            if ($this->time < date('H:i')) {
+                return $this->addError('time', 'Время должно быть позже текущего');
+            }
+        }
     }
 
     /**
@@ -64,17 +82,18 @@ class Application extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'user_id' => 'User ID',
-            'service_id' => 'Service ID',
-            'date' => 'Date',
-            'time' => 'Time',
-            'adress' => 'Adress',
-            'tool_id' => 'Tool ID',
-            'self_tool' => 'Self Tool',
-            'pay_type_id' => 'Pay Type ID',
-            'status_id' => 'Status ID',
-            'created_at' => 'Created At',
+            'id' => '№',
+            'user_id' => 'ФИО',
+            'service_id' => 'Услуга',
+            'date' => 'Желаемая дата',
+            'time' => 'Желаемое время',
+            'adress' => 'Адрес выполнения услуги',
+            'tool_id' => 'Средства для уборки',
+            'self_tool' => 'Использовать свои средства',
+            'pay_type_id' => 'Способ оплаты',
+            'rule' => 'Согласие на обработку персональных данных',
+            'status_id' => 'Статус заявки',
+            'created_at' => 'Дата создания заявки',
         ];
     }
 
@@ -147,5 +166,4 @@ class Application extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
-
 }

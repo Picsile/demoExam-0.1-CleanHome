@@ -77,6 +77,7 @@ class SiteController extends Controller
             if ($user = $model->register()) {
 
                 Yii::$app->session->setFlash('success', 'Вы успешно зарегистрировались!');
+                Yii::$app->user->login($user, 3600 * 24 * 30);
 
                 return $this->redirect('/account');
             }
@@ -103,9 +104,9 @@ class SiteController extends Controller
             Yii::$app->session->setFlash('success', 'Вы успешно вошли в систему!');
 
             if (Yii::$app->user->identity->role) {
-                return $this->redirect('/account');
-            } else {
                 return $this->redirect('/admin');
+            } else {
+                return $this->redirect('/account');
             }
         }
 

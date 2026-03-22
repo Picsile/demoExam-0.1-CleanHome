@@ -42,6 +42,14 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             'options' => ['class' => 'navbar-nav'],
             'items' => [
                 ['label' => 'Главная', 'url' => ['/site/index']],
+
+                Yii::$app->user->identity?->isAccount
+                    ? ['label' => 'Личный кабиент', 'url' => ['/account']]
+                    : '',
+                Yii::$app->user->identity?->isAdmin
+                    ? ['label' => 'Панель управления', 'url' => ['/admin']]
+                    : '',
+
                 Yii::$app->user->isGuest
                     ? ['label' => 'Регистрация', 'url' => ['/site/register']]
                     : '',

@@ -1,17 +1,17 @@
 <?php
 
-use yii\helpers\Html;
+use yii\bootstrap5\Html;
 
 /** @var yii\web\View $this */
 /** @var app\models\Application $model */
 
-$this->title = 'Create Application';
-$this->params['breadcrumbs'][] = ['label' => 'Applications', 'url' => ['index']];
+$this->title = 'Формирование заявки';
+$this->params['breadcrumbs'][] = ['label' => 'Мои заявки', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="application-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
 
     <?= $this->render('_form', [
         'model' => $model,

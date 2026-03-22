@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "status".
  *
@@ -58,4 +56,8 @@ class Status extends \yii\db\ActiveRecord
         return $this->hasMany(Application::class, ['status_id' => 'id']);
     }
 
+    public static function getStatusByAlias($alias): int
+    {
+        return static::findOne(['alias' => $alias])->id;
+    }
 }

@@ -56,4 +56,10 @@ class Tool extends \yii\db\ActiveRecord
         return $this->hasMany(Application::class, ['tool_id' => 'id']);
     }
 
+    public static function getTools(): array
+    {
+        return static::find()->select('title')->indexBy('id')->column();
+    }
+
+    
 }

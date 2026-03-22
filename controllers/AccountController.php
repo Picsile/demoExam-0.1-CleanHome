@@ -3,6 +3,9 @@
 namespace app\controllers;
 
 use app\models\Application;
+use app\models\Feedback;
+use app\models\Status;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -13,6 +16,19 @@ use yii\filters\VerbFilter;
  */
 class AccountController extends Controller
 {
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        if (!Yii::$app->user->identity?->role == 0) {
+            return $this->redirect('/');
+        }
+
+        return true; // or false to not run the action
+    }
+
     /**
      * @inheritDoc
      */
@@ -22,7 +38,7 @@ class AccountController extends Controller
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
                     ],
@@ -39,17 +55,11 @@ class AccountController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Application::find(),
-            /*
+            'query' => Application::find()->where(['user_id' => Yii::$app->user->id]),
+
             'pagination' => [
-                'pageSize' => 50
+                'pageSize' => 5
             ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-            */
         ]);
 
         return $this->render('index', [
@@ -80,8 +90,13 @@ class AccountController extends Controller
         $model = new Application();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post())) {
+                $model->user_id = Yii::$app->user->id;
+                $model->status_id = Status::getStatusByAlias('New');
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'Вы успешно создали новую заявку!');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
         } else {
             $model->loadDefaultValues();
@@ -99,16 +114,24 @@ class AccountController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionFeedback($id)
     {
         $model = $this->findModel($id);
+        $feedback = new Feedback();
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost && $feedback->load($this->request->post())) {
+
+            $feedback->application_id = $model->id;
+
+            if ($feedback->save()) {
+                Yii::$app->session->setFlash('success', 'Вы успешно оставили отзыв на заявку!');
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
-        return $this->render('update', [
+        return $this->render('feedback', [
             'model' => $model,
+            'feedback' => $feedback,
         ]);
     }
 

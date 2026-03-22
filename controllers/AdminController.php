@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Application;
 use app\models\ApplicationSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -13,6 +14,19 @@ use yii\filters\VerbFilter;
  */
 class AdminController extends Controller
 {
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        if (!Yii::$app->user->identity?->role == 1) {
+            return $this->redirect('/');
+        }
+
+        return true; // or false to not run the action
+    }
+
     /**
      * @inheritDoc
      */
